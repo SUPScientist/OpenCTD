@@ -1,0 +1,5 @@
+{
+    "particle.firmwareVersion": "0.9.0",
+    "particle.targetPlatform": "boron",
+    "cortex-debug.openocdPath": "/Users/pjb/.particle/toolchains/openocd/0.10.0-particle.1/bin/openocd"
+}

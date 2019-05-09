@@ -13,3 +13,10 @@ I'm using [Particle Workbench/VS Code](https://www.particle.io/workbench/) with 
 
 ### Subdirectories
 ./OpenCTD_complete_noCell/ contains the full script which polls and records data from the sensors. The other subdirectories here contain example code and compiled binaries (for )
+
+### todo
+- add .gitignore (.DS_Store and probably lots of the .vscode stuff, not sure, research Particle Workbench best practices)
+- utilize cell module for getting real time
+- add real time to datalog
+- utilize cell module for transferring data after deployment (add a counter to determine how long it's been out of water)
+- copy and then edit build instructions from main OpenCTD projects and see if CTDizzle has some additional pointers

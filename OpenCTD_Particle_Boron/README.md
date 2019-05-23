@@ -20,3 +20,4 @@ I'm using [Particle Workbench/VS Code](https://www.particle.io/workbench/) with 
 - add real time to datalog
 - utilize cell module for transferring data after deployment (add a counter to determine how long it's been out of water)
 - copy and then edit build instructions from main OpenCTD projects and see if CTDizzle has some additional pointers
+- add sensors!

@@ -1,5 +1,5 @@
 #include "application.h"
-#line 1 "/Users/pjb/Dropbox/Particle_Projects/OPO_OpenCTDTest/OpenCTD_complete_noCell/OpenCTD_complete_noCell/src/OpenCTD_complete_noCell.ino"
+#line 1 "/Users/pjb/Dropbox/Makerspace/Classes/OpenCTD/OpenCTD_Particle_Boron/OpenCTD_complete_noCell/OpenCTD_complete_noCell/src/OpenCTD_complete_noCell.ino"
 /*
  * Project OpenCTD_complete_noCell
  * Description: An attempt to replicate the OceanographyforEveryone/OpenCTD project on a Particle Boron; this first attempt does not utilize cellular data transfer.
@@ -27,7 +27,7 @@ void setup(void);
 void loop(void);
 void parse_data();
 void getTemp();
-#line 24 "/Users/pjb/Dropbox/Particle_Projects/OPO_OpenCTDTest/OpenCTD_complete_noCell/OpenCTD_complete_noCell/src/OpenCTD_complete_noCell.ino"
+#line 24 "/Users/pjb/Dropbox/Makerspace/Classes/OpenCTD/OpenCTD_Particle_Boron/OpenCTD_complete_noCell/OpenCTD_complete_noCell/src/OpenCTD_complete_noCell.ino"
 float EC_float = 0;  // Electrical conductivity.
 char EC_data[48];    // A 48 byte character array to hold incoming data from the conductivity circuit. 
 char *EC;            // Character pointer for string parsing.
@@ -54,6 +54,9 @@ const uint8_t chipSelect = SS; // SD chip select pin.  Be sure to disable any ot
 SdFat sd; // File system object.
 SdFile file; // Log file.
 #define FILE_BASE_NAME "Data" // Log file base name.  Must be six characters or less.
+// Make filename something generic with numbers at the end so we always check to see if a given filename exists
+const uint8_t BASE_NAME_SIZE = sizeof(FILE_BASE_NAME) - 1;
+char fileName[13] = FILE_BASE_NAME "00.csv";
 
 // Particle-specific: so that we can manually disable cellular capabilities (cellular.off() call below)
 SYSTEM_MODE(MANUAL); 
@@ -80,29 +83,13 @@ void setup(void) {
     sd.initErrorHalt();
   }
 
-  // Make filename something generic with numbers at the end so we always check to see if a given filename exists
-  const uint8_t BASE_NAME_SIZE = sizeof(FILE_BASE_NAME) - 1;
-  char fileName[13] = FILE_BASE_NAME "00.csv";
-
-  // Find an unused file name.
-  if (BASE_NAME_SIZE > 6) {
-    Serial.print("FILE_BASE_NAME too long");
-  }
-  while (sd.exists(fileName)) {
-    if (fileName[BASE_NAME_SIZE + 1] != '9') {
-      fileName[BASE_NAME_SIZE + 1]++;
-    } else if (fileName[BASE_NAME_SIZE] != '9') {
-      fileName[BASE_NAME_SIZE + 1] = '0';
-      fileName[BASE_NAME_SIZE]++;
-    } else {
-      Serial.println("Can't create file name");
-    }
-  }
-  if (!file.open(fileName, O_WRONLY | O_CREAT | O_EXCL)) {
-    Serial.println("SD error");
+  if (file.open("datalog.csv", FILE_WRITE)) {
+    file.println("");
+    file.println("=== New Cast ===");
+    file.close();
   }
   else {
-
+    Serial.println("SD Card Error!");
   }
 
 }
@@ -132,22 +119,27 @@ void loop(void) {
   // tempC = sensors.getTempCByIndex(2);
 
   // Log to the SD card...
+  file.open("datalog.csv", FILE_WRITE);
+  file.print(Time.now());
+  file.print(",");
   file.print(sensor.getPressure(ADC_4096));
-  file.print("  ");
+  file.print(",");
   file.print(celsius);
-  file.print("  ");
+  file.print(",");
   // SdFile.print(tempB);
   // SdFile.print("  ");
   // SdFile.print(tempC);
   // SdFile.print("  ");
   file.println(EC);
-  // file.close();
+  file.close();
 
   // Log to the serial monitor.
+  Serial.print(Time.now());
+  Serial.print(",");
   Serial.print(sensor.getPressure(ADC_4096));
-  Serial.print("  "); 
+  Serial.print(","); 
   Serial.print(celsius);
-  Serial.print("  ");
+  Serial.print(",");
   // Serial.print(tempB);
   // Serial.print("  ");
   // Serial.print(tempC);
